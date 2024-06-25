@@ -17,13 +17,13 @@ type TokenBucket struct {
 // NewTokenBucket create a new Rate Limiter using Token Bucket algorithm.
 // rate represents the number of tokens added per second.
 // capacity is the total number of tokens allowed anytime.
-// tp represents the time provider for getting the current time. helpful for mocking time when testing.
+// tp represents the time provider for getting the current UTC time. helpful for mocking time when testing.
 func NewTokenBucket(rate float64, capacity float64, tp TimeProvider) *TokenBucket {
 	return &TokenBucket{
 		rate:         rate,
 		capacity:     capacity,
 		tokens:       capacity,
-		lastRefill:   tp.Now().UTC(),
+		lastRefill:   tp.Now(),
 		timeProvider: tp,
 	}
 }

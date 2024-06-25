@@ -32,7 +32,7 @@ func (fwc *FixedWindowCounter) Allow() bool {
 	fwc.mu.Lock()
 	defer fwc.mu.Unlock()
 
-	now := fwc.timeProvider.Now().UTC()
+	now := fwc.timeProvider.Now()
 
 	// 1. Check if we're in a new window, if so reset the count
 	//

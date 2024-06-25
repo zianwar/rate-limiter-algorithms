@@ -17,13 +17,13 @@ type LeakyBucket struct {
 // NewLeakyBucket create a new Rate Limiter using Leaky Bucket algorithm.
 // rate represents the rate at which the water is leaked from the bucket.
 // capacity is the total number of water the bucket can hold.
-// tp represents the time provider for getting the current time. helpful for mocking time when testing.
+// tp represents the time provider for getting the current UTC time. helpful for mocking time when testing.
 func NewLeakyBucket(rate float64, capacity float64, tp TimeProvider) *LeakyBucket {
 	return &LeakyBucket{
 		rate:         rate,
 		capacity:     capacity,
 		water:        0,
-		lastLeak:     tp.Now().UTC(),
+		lastLeak:     tp.Now(),
 		timeProvider: tp,
 	}
 }
@@ -33,7 +33,7 @@ func (lb *LeakyBucket) Allow() bool {
 	defer lb.mu.Unlock()
 
 	// 1. Calculate the amount of water leaked since last check
-	now := lb.timeProvider.Now().UTC() // Use injected time
+	now := lb.timeProvider.Now()
 	elapsed := now.Sub(lb.lastLeak)
 	leakedAmount := elapsed.Seconds() * lb.rate
 

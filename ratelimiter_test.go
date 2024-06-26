@@ -123,10 +123,40 @@ func TestFixedWindowCounter(t *testing.T) {
 	}
 }
 
-func TestSlidingWindowLog(t *testing.T) {
-	// Implement tests for Sliding Window Log
-}
-
 func TestSlidingWindowCounter(t *testing.T) {
-	// Implement tests for Sliding Window Counter
+	rate := 5.0
+	interval := 1 * time.Minute
+	mockTimeProvider := &MockTimeProvider{currentTime: time.Now().UTC()}
+	swc := NewSlidingWindowCounter(rate, interval, mockTimeProvider)
+
+	// Should allow first request (R0) at 0:00
+	if !swc.Allow() {
+		t.Error("First request was unexpectedly denied")
+	}
+
+	// Move time to 0:30
+	mockTimeProvider.Advance(30 * time.Second)
+
+	// Send 4 requests (R1, R2, R3, R4) to fill up the rate, they should be allowed.
+	for i := 0; i < 4; i++ {
+		if !swc.Allow() {
+			t.Errorf("Request %d was unexpectedly denied", i+1)
+		}
+	}
+
+	// Move time to 1:10, shift into a new window.
+	mockTimeProvider.Advance(40 * time.Second)
+
+	// Send R5, it should reset the counters and start new window.r
+	if !swc.Allow() {
+		t.Error("Request R5 was unexpectedly denied at the start of a new window.")
+	}
+
+	// Move time to 1:20, still in the same window.
+	mockTimeProvider.Advance(10 * time.Second)
+
+	// Next request should be allowed since we started calculating a new window.
+	if swc.Allow() {
+		t.Error("Request should be denied as the sliding window rate limit has been reached")
+	}
 }

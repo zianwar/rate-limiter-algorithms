@@ -23,7 +23,7 @@ func NewFixedWindowCounter(rate int, interval time.Duration, tp TimeProvider) *F
 		rate:         rate,
 		interval:     interval,
 		count:        0,
-		windowStart:  time.Now().UTC(),
+		windowStart:  tp.Now(),
 		timeProvider: tp,
 	}
 }

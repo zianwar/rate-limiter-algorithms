@@ -2,6 +2,16 @@
 
 This repository contains implementations of various rate limiting algorithms using Go. These algorithms help manage how often users or clients can access a resource within a given time frame, which is crucial for maintaining the stability and reliability of applications.
 
+# Usage
+
+Clone the repository and run the tests.
+
+```go
+go test -v ./...
+```
+
+This command will run all the tests in your repository, verifying the correct functionality of each implemented rate limiting algorithm.
+
 ## Algorithms Implemented
 
 ### 1. **Token Bucket**:
@@ -41,5 +51,4 @@ When a request arrives: The algorithm checks if there is room in the bucket to a
 ### Other simple algorithms
 
 1. **Fixed Window Counter**: Counts requests in a fixed time window (e.g., per minute) and resets the count at the start of the next window. Can potentially allow bursts of traffic at the edges of the windows.
-2. **Sliding Log**: Records timestamps of each incoming request and ensures that the rate of requests doesn't exceed the set limit for any given time window.
-3. **Sliding Window Counter**: Improves on the fixed window by smoothing out bursts at the edges of the windows using overlapping windows to calculate the rate.
+2. **Sliding Window Counter**: Improves on the fixed window by smoothing out bursts at the edges of the windows using overlapping windows to calculate the rate.
